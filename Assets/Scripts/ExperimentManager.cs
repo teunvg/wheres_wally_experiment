@@ -22,9 +22,9 @@ public class ExperimentManager : MonoBehaviour {
 
     public float hitScore = 5f;
     public float missPenalty = 20f;
-    public float timePenalty = .5f;
+    public float timePenalty = .75f;
     public float distanceScoreMultiplier = 15f;
-    public float airtimePenalty = 2;
+    public float airtimePenalty = 1;
 
     // Private fields
     private enum State : byte { Initialisation, Instructions, PreTrial, InTrial, PostTrial, ThankYou };
@@ -198,9 +198,15 @@ public class ExperimentManager : MonoBehaviour {
         string cue = string.Format("Try to {0}\nto improve your score!\nTap to continue...", cue_messages[highest_loss_index]);
 
         EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "score", score);
-        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats", stats);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.hits", stats.hits);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.misses", stats.misses);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.taps", stats.taps);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.tapdistance", stats.tapdistance);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.targets", stats.targets);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.airtime", stats.airtime);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "stats.trialtime", stats.trialtime);
         EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "cue", cue_messages[highest_loss_index]);
-        Debug.Log(string.Join(", ", losses)); // Debug for raw loss scores
+        //Debug.Log(string.Join(", ", losses)); // Debug for raw loss scores
 
         this.ShowOverlay(cue);
     }
@@ -222,6 +228,6 @@ public class ExperimentManager : MonoBehaviour {
     /// <param name="newState">The state to transition to.</param>
     private void ChangeState(State newState) {
         this.state = newState;
-        EventLogger.Instance.LogEvent(EventLogger.Type.Experiment, "state", this.state);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Experiment, "state", this.state.ToString());
     }
 }

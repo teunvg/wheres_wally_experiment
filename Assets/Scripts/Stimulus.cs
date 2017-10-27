@@ -75,7 +75,7 @@ public class Stimulus : MonoBehaviour {
     public void Show() {
         this.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         if (this.type != Type.Cue) {
-            EventLogger.Instance.LogEvent(EventLogger.Type.Stimulus, "show", new StimulusData { position = this.transform.position, rotation = this.rotation.eulerAngles.z, type = this.type });
+            EventLogger.Instance.LogEvent(EventLogger.Type.Stimulus, "show", new float[] { this.transform.position.x, this.transform.position.y, this.rotation.eulerAngles.z, (float)this.type });
         }
     }
 
@@ -85,7 +85,7 @@ public class Stimulus : MonoBehaviour {
     /// <param name="position">The tap position.</param>
     /// <returns>The distance from the stimulus center when the stimulus is a target, -1 otherwise.</returns>
     public float Tap(Vector2 position) {
-        EventLogger.Instance.LogEvent(EventLogger.Type.Stimulus, "tap", new StimulusTap { position = this.transform.position, tap = position });
+        EventLogger.Instance.LogEvent(EventLogger.Type.Stimulus, "tap", new float[] { this.transform.position.x, this.transform.position.y });
         return this.type == Type.Target ? (position - (Vector2)this.transform.position).magnitude : -1;
     }
 }

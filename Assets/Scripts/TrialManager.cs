@@ -249,7 +249,7 @@ public class TrialManager : MonoBehaviour {
     /// <param name="newState">The state to transition to.</param>
     private void ChangeState(State newState) {
         this.state = newState;
-        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "state", this.state);
+        EventLogger.Instance.LogEvent(EventLogger.Type.Trial, "state", this.state.ToString());
     }
 
     /// <summary>

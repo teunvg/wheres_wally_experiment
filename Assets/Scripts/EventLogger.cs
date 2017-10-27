@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FieldTrip.Buffer;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -48,12 +49,15 @@ public class EventLogger {
     private static EventLogger instance;
 
     private IList<EventId<object>> events;
+    private BufferClient client;
 
     /// <summary>
     /// Create new (singleton) event logger.
     /// </summary>
     private EventLogger() {
         events = new List<EventId<object>>();
+        client = new BufferClient();
+        client.connect("localhost", 1972);
     }
 
     /// <summary>
@@ -69,15 +73,70 @@ public class EventLogger {
     }
 
     /// <summary>
-    /// Logs an event of the given type, with a given name and value.
+    /// Logs an event of the given type locally, with a given name and value.
     /// </summary>
     /// <param name="type">The event type.</param>
     /// <param name="name">The name of the event.</param>
     /// <param name="value">the data associated with the event.</param>
-    public void LogEvent(string type, string name, object value) {
+    public void LogLocalEvent(string type, string name, object value) {
         EventId<object> id = new EventId<object>(type, name, Time.time, value);
         events.Add(id);
         Debug.Log(id.ToString());
+    }
+
+    /// <summary>
+    /// Logs an event of the given type, with a given name and value of type float[].
+    /// </summary>
+    /// <param name="type">The event type.</param>
+    /// <param name="name">The name of the event.</param>
+    /// <param name="value">the data associated with the event.</param>
+    public void LogEvent(string type, string name, float[] value) {
+        LogLocalEvent(type, name, value);
+        client.putEvent(new BufferEvent(type + "." + name, value, client.poll().nSamples));
+    }
+
+    /// <summary>
+    /// Logs an event of the given type, with a given name and value of type float.
+    /// </summary>
+    /// <param name="type">The event type.</param>
+    /// <param name="name">The name of the event.</param>
+    /// <param name="value">the data associated with the event.</param>
+    public void LogEvent(string type, string name, float value) {
+        LogLocalEvent(type, name, value);
+        client.putEvent(new BufferEvent(type + "." + name, value, client.poll().nSamples));
+    }
+
+    /// <summary>
+    /// Logs an event of the given type, with a given name and value of type int[].
+    /// </summary>
+    /// <param name="type">The event type.</param>
+    /// <param name="name">The name of the event.</param>
+    /// <param name="value">the data associated with the event.</param>
+    public void LogEvent(string type, string name, int[] value) {
+        LogLocalEvent(type, name, value);
+        client.putEvent(new BufferEvent(type + "." + name, value, client.poll().nSamples));
+    }
+
+    /// <summary>
+    /// Logs an event of the given type, with a given name and value of type int.
+    /// </summary>
+    /// <param name="type">The event type.</param>
+    /// <param name="name">The name of the event.</param>
+    /// <param name="value">the data associated with the event.</param>
+    public void LogEvent(string type, string name, int value) {
+        LogLocalEvent(type, name, value);
+        client.putEvent(new BufferEvent(type + "." + name, value, client.poll().nSamples));
+    }
+
+    /// <summary>
+    /// Logs an event of the given type, with a given name and value of type string.
+    /// </summary>
+    /// <param name="type">The event type.</param>
+    /// <param name="name">The name of the event.</param>
+    /// <param name="value">the data associated with the event.</param>
+    public void LogEvent(string type, string name, string value) {
+        LogLocalEvent(type, name, value);
+        client.putEvent(new BufferEvent(type + "." + name, value, client.poll().nSamples));
     }
 
     /// <summary>
@@ -86,6 +145,7 @@ public class EventLogger {
     /// <param name="type">The event type.</param>
     /// <param name="name">The name of the event.</param>
     public void LogEvent(string type, string name) {
-        this.LogEvent(type, name, true);
+        LogLocalEvent(type, name, null);
+        client.putEvent(new BufferEvent(type + "." + name, new byte[] { }, client.poll().nSamples));
     }
 }
